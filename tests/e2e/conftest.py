@@ -16,7 +16,6 @@ from app.main import create_app
 def pytest_addoption(parser):
     parser.addoption("--headed", action="store_true", help="Show the E2E browser window")
 
-
 @pytest.fixture
 def live_server(tmp_path: Path) -> Iterator[str]:
     # Reserve a free port instead of hard-coding 8000 or racing another process.
@@ -53,7 +52,11 @@ def browser(pytestconfig):
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as playwright:
-        options = {"headless": not pytestconfig.getoption("--headed")}
+        try:
+            headed = pytestconfig.getoption("--headed")
+        except ValueError:
+            headed = False
+        options = {"headless": not headed}
         executable = os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH")
         if executable:
             options["executable_path"] = executable
