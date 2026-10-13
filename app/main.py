@@ -76,7 +76,12 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
 
     @application.put("/api/cars/{car_id}", response_model=Car, tags=["cars"])
     def update_car(car_id: CarId, car: CarInput) -> Car:
+        print("===== PUT update_car 被调用了 =====", flush=True)
+        print("car_id =", car_id, flush=True)
+        print("db_path =", db_path, flush=True)
+        print("收到的 car =", car.model_dump(), flush=True)
         updated = database.update_car(db_path, car_id, car)
+        print("update_car 返回 =", updated, flush=True)
         if updated is None:
             raise HTTPException(status_code=404, detail="Car not found")
         return updated
