@@ -47,10 +47,6 @@ def list_cars(database_path: Path) -> list[Car]:
 def get_car(database_path: Path, car_id: int) -> Car | None:
     with connect(database_path) as connection:
         row = connection.execute("SELECT * FROM cars WHERE id = ?", (car_id,)).fetchone()
-        print("===== get_car =====", flush=True)
-        print("database_path =", database_path, flush=True)
-        print("car_id =", car_id, flush=True)
-        print("数据库里的行 =", dict(row) if row else None, flush=True)
         return Car(**dict(row)) if row is not None else None
 
 
@@ -64,22 +60,15 @@ def create_car(database_path: Path, car: CarInput) -> Car:
 
 
 def update_car(database_path: Path, car_id: int, car: CarInput) -> Car | None:
-    print("===== database.update_car 开始 =====", flush=True)
-    print("database_path =", database_path, flush=True)
-    print("car_id =", car_id, flush=True)
-    print("car =", car.model_dump(), flush=True)
     with connect(database_path) as connection:
         cursor = connection.execute(
             "UPDATE cars SET make = ?, model = ?, year = ?, color = ? WHERE id = ?",
             (car.make, car.model, car.year, car.color, car_id),
         )
-        print("cursor.rowcount =", cursor.rowcount, flush=True)
         if cursor.rowcount == 0:
-            print("rowcount 是 0，返回 None", flush=True)
             return None
         # 验证写入是否生效
         row = connection.execute("SELECT * FROM cars WHERE id = ?", (car_id,)).fetchone()
-        print("写完后数据库里的行 =", dict(row) if row else None, flush=True)
         return Car(id=car_id, **car.model_dump())
 
 
