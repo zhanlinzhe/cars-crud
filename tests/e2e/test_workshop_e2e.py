@@ -23,6 +23,8 @@ def test_user_edits_car_and_change_survives_reload(page, live_server):
     page.get_by_label("Year", exact=True).fill("2023")
     page.get_by_role("button", name="Save changes").click()
     expect(page).to_have_url(re.compile(r"/cars/\d+$"))
+    print("URL:", page.url)
+    print("BODY:", page.locator("body").inner_text())
     expect(page.get_by_role("heading", name="Honda Accord")).to_be_visible()
     page.reload()
     expect(page.locator("#car-model")).to_have_text("Accord")
