@@ -67,6 +67,8 @@ def update_car(database_path: Path, car_id: int, car: CarInput) -> Car | None:
         )
         if cursor.rowcount == 0:
             return None
+        # 验证写入是否生效
+        row = connection.execute("SELECT * FROM cars WHERE id = ?", (car_id,)).fetchone()
         return Car(id=car_id, **car.model_dump())
 
 
