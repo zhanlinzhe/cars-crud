@@ -35,4 +35,4 @@ jobs:
         run: python -m pytest tests/api -q
 
       - name: Run E2E tests
-        run: python -m pytest tests/e2e -q
+        run: python -m pytest tests/e2e -q -s
