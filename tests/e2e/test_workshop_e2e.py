@@ -23,6 +23,13 @@ def test_user_edits_car_and_change_survives_reload(page, live_server):
     page.get_by_label("Year", exact=True).fill("2023")
     page.get_by_role("button", name="Save changes").click()
     expect(page).to_have_url(re.compile(r"/cars/\d+$"))
+
+     # ===== 临时调试打印，确认后删除 =====
+    print("===== CI DEBUG START =====")
+    print("URL:", page.url)
+    print("BODY:", page.locator("body").inner_text())
+    print("HEADINGS:", page.get_by_role("heading").all_inner_texts())
+    print("===== CI DEBUG END =====")
     expect(page.get_by_role("heading", name="Honda Accord")).to_be_visible()
     page.reload()
     expect(page.locator("#car-model")).to_have_text("Accord")
